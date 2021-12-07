@@ -29,7 +29,7 @@ public interface DrinkAPI {
     ResponseEntity<List<Drink>> getAllByCategory(@PathVariable("categoryId") String categoryId);
 
     @GetMapping("/category/{categoryId}/search")
-    ResponseEntity<List<Category>> search(
+    ResponseEntity<List<Drink>> search(
             @PathVariable("categoryId") String categoryId,
             @RequestParam("name") String name
     );

@@ -1,6 +1,7 @@
 package ru.vsu.cs.proskuryakov.coffeestrike.app.services;
 
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.FileNotLoadedException;
@@ -19,7 +20,8 @@ public class DrinkService {
     private final SequenceService sequenceService;
     private final FileService fileService;
 
-    public DrinkItem create(DrinkItem drinkItem, MultipartFile file) throws FileNotLoadedException {
+    @SneakyThrows
+    public DrinkItem create(DrinkItem drinkItem, MultipartFile file) {
         if (file == null) throw new FileNotLoadedException("Отсутствует файл");
         String id = sequenceService.getNextDrinkId();
         String imageLink = fileService.uploadFile(file, "drink_" + id);
@@ -41,11 +43,12 @@ public class DrinkService {
         return drinkRepository.findAllByCategoryItemIsAndNameContains(categoryItem, name.toLowerCase());
     }
 
-    public DrinkItem getById(String drinkId) throws NotFoundException {
+    @SneakyThrows
+    public DrinkItem getById(String drinkId) {
         return drinkRepository.findById(drinkId).orElseThrow(() -> new NotFoundException("Drink not found"));
     }
-
-    public DrinkItem updateById(String drinkId, DrinkItem drinkItem, MultipartFile file) throws NotFoundException, FileNotLoadedException {
+    @SneakyThrows
+    public DrinkItem updateById(String drinkId, DrinkItem drinkItem, MultipartFile file) {
         String imageLink = file == null ? getById(drinkId).getImageLink() : fileService.uploadFile(file, "drink_" + drinkId);
         return drinkRepository.save(drinkItem.withDrinkid(drinkId).withImageLink(imageLink));
     }
