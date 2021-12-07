@@ -7,6 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.FileNotLoadedException;
 import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.NotFoundException;
 import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.CategoryItem;
 import ru.vsu.cs.proskuryakov.coffeestrike.db.repository.CategoryRepository;
@@ -26,6 +29,8 @@ class CategoryServiceTest {
     private static CategoryRepository categoryRepository;
     @Mock
     private static SequenceService sequenceService;
+    @Mock
+    private static FileService fileService;
     @InjectMocks
     private CategoryService categoryService;
 
@@ -33,21 +38,29 @@ class CategoryServiceTest {
             .withCategoryid("1").withName("латте").withImageLink("https://image.coffeestrike.ru");
     private final CategoryItem categoryItem2 = new CategoryItem()
             .withCategoryid("2").withName("раф").withImageLink("https://image.coffeestrike.ru");
+    private final MultipartFile file = new MockMultipartFile("file", "file".getBytes());
 
     @BeforeEach
     private void init() {
-        categoryService = new CategoryService(categoryRepository, sequenceService);
+        categoryService = new CategoryService(categoryRepository, sequenceService, fileService);
     }
 
     @Test
     @DisplayName("Create category test")
-    void createCategoryTest() {
+    void createCategoryTest() throws FileNotLoadedException {
         when(sequenceService.getNextCategoryId()).thenReturn("1");
         when(categoryRepository.insert(any(CategoryItem.class))).then(returnsFirstArg());
+        when(fileService.uploadFile(any(MultipartFile.class), any(String.class))).thenReturn("https://image.coffeestrike.ru");
 
-        var category = categoryService.create(categoryItem1);
+        var category = categoryService.create(categoryItem1, file);
         assertNotNull(category);
         assertEquals(categoryItem1, category);
+    }
+
+    @Test
+    @DisplayName("Create category without file test")
+    void createCategoryFailTest() {
+        assertThrows(FileNotLoadedException.class, () -> categoryService.create(categoryItem1, null));
     }
 
     @Test
@@ -80,10 +93,22 @@ class CategoryServiceTest {
 
     @Test
     @DisplayName("Update category by id test")
-    void updateCategoryByIdTest() {
+    void updateCategoryByIdTest() throws NotFoundException, FileNotLoadedException {
+        when(categoryRepository.save(any(CategoryItem.class))).then(returnsFirstArg());
+        when(fileService.uploadFile(any(MultipartFile.class), any(String.class))).thenReturn("https://image.coffeestrike.ru");
+
+        var newCategory = categoryService.updateById("2", categoryItem1, file);
+        assertNotNull(newCategory);
+        assertEquals(categoryItem1.withCategoryid("2"), newCategory);
+    }
+
+    @Test
+    @DisplayName("Update category by id without file test")
+    void updateCategoryByIdWithoutFileTest() throws NotFoundException, FileNotLoadedException {
+        when(categoryRepository.findById(any(String.class))).thenReturn(Optional.of(categoryItem1));
         when(categoryRepository.save(any(CategoryItem.class))).then(returnsFirstArg());
 
-        var newCategory = categoryService.updateById("2", categoryItem1);
+        var newCategory = categoryService.updateById("2", categoryItem1, null);
         assertNotNull(newCategory);
         assertEquals(categoryItem1.withCategoryid("2"), newCategory);
     }

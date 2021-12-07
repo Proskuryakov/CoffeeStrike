@@ -8,7 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import ru.vsu.cs.proskuryakov.coffeestrike.api.models.Ingredient;
+import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.FileNotLoadedException;
 import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.NotFoundException;
 import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.CategoryItem;
 import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.DrinkItem;
@@ -30,6 +33,8 @@ class DrinkServiceTest {
     private static DrinkRepository drinkRepository;
     @Mock
     private static SequenceService sequenceService;
+    @Mock
+    private static FileService fileService;
     @InjectMocks
     private DrinkService drinkService;
 
@@ -37,6 +42,7 @@ class DrinkServiceTest {
     private static CategoryItem categoryItem2;
     private static DrinkItem drinkItem1;
     private static DrinkItem drinkItem2;
+    private final MultipartFile file = new MockMultipartFile("file", "file".getBytes());
 
     @BeforeAll
     private static void initModels() {
@@ -74,18 +80,25 @@ class DrinkServiceTest {
 
     @BeforeEach
     private void init() {
-        drinkService = new DrinkService(drinkRepository, sequenceService);
+        drinkService = new DrinkService(drinkRepository, sequenceService, fileService);
     }
 
     @Test
     @DisplayName("Create drink test")
-    void createDrinkTest() {
+    void createDrinkTest() throws FileNotLoadedException {
         when(sequenceService.getNextDrinkId()).thenReturn("1");
         when(drinkRepository.insert(any(DrinkItem.class))).then(returnsFirstArg());
+        when(fileService.uploadFile(any(MultipartFile.class), any(String.class))).thenReturn("https://image.coffeestrike.ru");
 
-        var drink = drinkService.create(drinkItem1);
+        var drink = drinkService.create(drinkItem1, file);
         assertNotNull(drink);
         assertEquals(drinkItem1, drink);
+    }
+
+    @Test
+    @DisplayName("Create drink without file test")
+    void createDrinkFailTest() {
+        assertThrows(FileNotLoadedException.class, () -> drinkService.create(drinkItem1, null));
     }
 
     @Test
@@ -141,10 +154,22 @@ class DrinkServiceTest {
 
     @Test
     @DisplayName("Update drink by id test")
-    void updateDrinkByIdTest() {
+    void updateDrinkByIdTest() throws NotFoundException, FileNotLoadedException {
         when(drinkRepository.save(any(DrinkItem.class))).then(returnsFirstArg());
+        when(fileService.uploadFile(any(MultipartFile.class), any(String.class))).thenReturn("https://image.coffeestrike.ru");
 
-        var newDrink = drinkService.updateById("2", drinkItem1);
+        var newDrink = drinkService.updateById("2", drinkItem1, file);
+        assertNotNull(newDrink);
+        assertEquals(drinkItem1.withDrinkid("2"), newDrink);
+    }
+
+    @Test
+    @DisplayName("Update drink by id without file test")
+    void updateDrinkByIdWithoutFileTest() throws NotFoundException, FileNotLoadedException {
+        when(drinkRepository.save(any(DrinkItem.class))).then(returnsFirstArg());
+        when(drinkRepository.findById(any(String.class))).thenReturn(Optional.of(drinkItem1));
+
+        var newDrink = drinkService.updateById("2", drinkItem1, null);
         assertNotNull(newDrink);
         assertEquals(drinkItem1.withDrinkid("2"), newDrink);
     }
