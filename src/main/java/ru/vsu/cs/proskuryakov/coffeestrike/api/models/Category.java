@@ -17,7 +17,6 @@ public class Category {
     @NotBlank
     private String name;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String imageLink;
 
 }
