@@ -23,6 +23,6 @@ public class ProductService {
     }
 
     public List<ProductItem> search(String name) {
-        return productRepository.findAllByNameContains(name);
+        return productRepository.findAllByNameContains(name.toLowerCase());
     }
 }
