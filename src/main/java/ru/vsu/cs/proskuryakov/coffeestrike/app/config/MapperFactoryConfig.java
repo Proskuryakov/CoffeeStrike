@@ -33,7 +33,9 @@ public class MapperFactoryConfig {
 		mapperFactory.classMap(Category.class, CategoryItem.class)
 				.field("id", "categoryid").byDefault().register();
 		mapperFactory.classMap(Drink.class, DrinkItem.class)
-				.field("id", "drinkid").byDefault().register();
+				.field("id", "drinkid")
+				.field("category", "categoryItem")
+				.byDefault().register();
 		mapperFactory.classMap(Product.class, ProductItem.class)
 				.field("id", "productid").byDefault().register();
 		mapperFactory.classMap(Unit.class, UnitItem.class)
