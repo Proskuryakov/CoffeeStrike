@@ -1,6 +1,7 @@
 package ru.vsu.cs.proskuryakov.coffeestrike.app.services;
 
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.FileNotLoadedException;
@@ -18,7 +19,8 @@ public class CategoryService {
     private final SequenceService sequenceService;
     private final FileService fileService;
 
-    public CategoryItem create(CategoryItem categoryItem, MultipartFile file) throws FileNotLoadedException {
+    @SneakyThrows
+    public CategoryItem create(CategoryItem categoryItem, MultipartFile file) {
         if (file == null) throw new FileNotLoadedException("Отсутствует файл");
         String id = sequenceService.getNextCategoryId();
         String imageLink = fileService.uploadFile(file, "category_" + id);
@@ -30,11 +32,13 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public CategoryItem getById(String categoryId) throws NotFoundException {
+    @SneakyThrows
+    public CategoryItem getById(String categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Category not found"));
     }
 
-    public CategoryItem updateById(String categoryId, CategoryItem categoryItem, MultipartFile file) throws NotFoundException, FileNotLoadedException {
+    @SneakyThrows
+    public CategoryItem updateById(String categoryId, CategoryItem categoryItem, MultipartFile file) {
         String imageLink = file == null ? getById(categoryId).getImageLink() : fileService.uploadFile(file, "category_" + categoryId);
         return categoryRepository.save(categoryItem.withCategoryid(categoryId).withImageLink(imageLink));
     }
