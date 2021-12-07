@@ -2,6 +2,8 @@ package ru.vsu.cs.proskuryakov.coffeestrike.app.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.FileNotLoadedException;
 import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.NotFoundException;
 import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.CategoryItem;
 import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.DrinkItem;
@@ -15,9 +17,16 @@ public class DrinkService {
 
     private final DrinkRepository drinkRepository;
     private final SequenceService sequenceService;
+    private final FileService fileService;
 
-    public DrinkItem create(DrinkItem drinkItem) {
-        return drinkRepository.insert(drinkItem.withDrinkid(sequenceService.getNextDrinkId()));
+    public DrinkItem create(DrinkItem drinkItem, MultipartFile file) throws FileNotLoadedException {
+        if (file == null) throw new FileNotLoadedException("Отсутствует файл");
+        String id = sequenceService.getNextDrinkId();
+        String imageLink = fileService.uploadFile(file, "drink_" + id);
+        return drinkRepository.insert(drinkItem
+                .withDrinkid(id)
+                .withImageLink(imageLink)
+        );
     }
 
     public List<DrinkItem> getAll() {
@@ -36,8 +45,9 @@ public class DrinkService {
         return drinkRepository.findById(drinkId).orElseThrow(() -> new NotFoundException("Drink not found"));
     }
 
-    public DrinkItem updateById(String drinkId, DrinkItem drinkItem) {
-        return drinkRepository.save(drinkItem.withDrinkid(drinkId));
+    public DrinkItem updateById(String drinkId, DrinkItem drinkItem, MultipartFile file) throws NotFoundException, FileNotLoadedException {
+        String imageLink = file == null ? getById(drinkId).getImageLink() : fileService.uploadFile(file, "drink_" + drinkId);
+        return drinkRepository.save(drinkItem.withDrinkid(drinkId).withImageLink(imageLink));
     }
 
     public void deleteById(String drinkId) {
