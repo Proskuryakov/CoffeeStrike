@@ -1,9 +1,10 @@
 package ru.vsu.cs.proskuryakov.coffeestrike.app.services;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.NotFoundException;
@@ -25,26 +26,23 @@ class CategoryServiceTest {
     private static CategoryRepository categoryRepository;
     @Mock
     private static SequenceService sequenceService;
+    @InjectMocks
+    private CategoryService categoryService;
 
-    private static CategoryService categoryService;
+    private final CategoryItem categoryItem1 = new CategoryItem()
+            .withCategoryid("1").withName("латте").withImageLink("https://image.coffeestrike.ru");
+    private final CategoryItem categoryItem2 = new CategoryItem()
+            .withCategoryid("2").withName("раф").withImageLink("https://image.coffeestrike.ru");
 
-    private static CategoryItem categoryItem1;
-    private static CategoryItem categoryItem2;
-
-    @BeforeAll
-    private static void init() {
+    @BeforeEach
+    private void init() {
         categoryService = new CategoryService(categoryRepository, sequenceService);
-
-        when(sequenceService.getNextCategoryId()).thenReturn("1");
-
-        String imageLink = "https://image.coffeestrike.ru";
-        categoryItem1 = new CategoryItem().withCategoryid("1").withName("латте").withImageLink(imageLink);
-        categoryItem2 = new CategoryItem().withCategoryid("2").withName("раф").withImageLink(imageLink);
     }
 
     @Test
     @DisplayName("Create category test")
     void createCategoryTest() {
+        when(sequenceService.getNextCategoryId()).thenReturn("1");
         when(categoryRepository.insert(any(CategoryItem.class))).then(returnsFirstArg());
 
         var category = categoryService.create(categoryItem1);
@@ -66,7 +64,7 @@ class CategoryServiceTest {
 
     @Test
     @DisplayName("Get category by id test")
-    void getCategoryByIdTest() {
+    void getCategoryByIdTest() throws NotFoundException {
         when(categoryRepository.findById(any(String.class))).thenReturn(Optional.of(categoryItem1));
         var c = categoryService.getById("1");
         assertNotNull(c);
@@ -77,7 +75,7 @@ class CategoryServiceTest {
     @DisplayName("Try get category by id and catch exception test")
     void getCategoryByIdAndCatchExceptionTest() {
         when(categoryRepository.findById(any(String.class))).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, categoryService.getById("1"));
+        assertThrows(NotFoundException.class, () -> categoryService.getById("100"));
     }
 
     @Test
