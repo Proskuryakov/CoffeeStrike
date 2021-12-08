@@ -30,7 +30,10 @@ public class FileService {
         if (!Objects.equals(file.getContentType(), "image/jpeg"))
             throw new FileNotLoadedException("Не подходящий тип файла");
         try {
-            PutObjectRequest req = new PutObjectRequest(bucketName, fileName, file.getInputStream(), new ObjectMetadata());
+            fileName = fileName + ".jpg";
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType("image/jpeg");
+            PutObjectRequest req = new PutObjectRequest(bucketName, fileName, file.getInputStream(), objectMetadata);
             s3client.putObject(req.withCannedAcl(CannedAccessControlList.PublicRead));
             return url + fileName;
         } catch (Exception ex) {
