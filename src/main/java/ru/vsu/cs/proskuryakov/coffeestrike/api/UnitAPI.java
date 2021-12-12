@@ -9,7 +9,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(
-        value = "/unit",
+        value = "/api/unit",
         produces = {APPLICATION_JSON_VALUE}
 )
 public interface UnitAPI {

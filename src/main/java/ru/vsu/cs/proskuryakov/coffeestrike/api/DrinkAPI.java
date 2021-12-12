@@ -11,7 +11,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(
-        value = "/drink",
+        value = "/api/drink",
         produces = {APPLICATION_JSON_VALUE}
 )
 public interface DrinkAPI {
