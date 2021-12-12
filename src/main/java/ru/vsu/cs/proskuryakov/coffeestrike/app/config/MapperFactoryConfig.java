@@ -11,10 +11,8 @@ import ru.vsu.cs.proskuryakov.coffeestrike.api.models.Category;
 import ru.vsu.cs.proskuryakov.coffeestrike.api.models.Drink;
 import ru.vsu.cs.proskuryakov.coffeestrike.api.models.Product;
 import ru.vsu.cs.proskuryakov.coffeestrike.api.models.Unit;
-import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.CategoryItem;
-import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.DrinkItem;
-import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.ProductItem;
-import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.UnitItem;
+import ru.vsu.cs.proskuryakov.coffeestrike.app.security.models.User;
+import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.*;
 
 import javax.annotation.PostConstruct;
 
@@ -40,6 +38,8 @@ public class MapperFactoryConfig {
 				.field("id", "productid").byDefault().register();
 		mapperFactory.classMap(Unit.class, UnitItem.class)
 				.field("id", "unitid").byDefault().register();
+		mapperFactory.classMap(User.class, UserItem.class)
+				.field("id", "userid").byDefault().register();
 
 		mapperFacade = mapperFactory.getMapperFacade();
 	}
