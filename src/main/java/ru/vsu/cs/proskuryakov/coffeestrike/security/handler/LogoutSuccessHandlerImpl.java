@@ -1,4 +1,4 @@
-package ru.vsu.cs.proskuryakov.coffeestrike.app.security.handler;
+package ru.vsu.cs.proskuryakov.coffeestrike.security.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

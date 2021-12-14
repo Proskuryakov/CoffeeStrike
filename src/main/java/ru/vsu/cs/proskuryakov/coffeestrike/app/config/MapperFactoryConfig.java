@@ -11,7 +11,7 @@ import ru.vsu.cs.proskuryakov.coffeestrike.api.models.Category;
 import ru.vsu.cs.proskuryakov.coffeestrike.api.models.Drink;
 import ru.vsu.cs.proskuryakov.coffeestrike.api.models.Product;
 import ru.vsu.cs.proskuryakov.coffeestrike.api.models.Unit;
-import ru.vsu.cs.proskuryakov.coffeestrike.app.security.models.User;
+import ru.vsu.cs.proskuryakov.coffeestrike.security.models.User;
 import ru.vsu.cs.proskuryakov.coffeestrike.db.domains.*;
 
 import javax.annotation.PostConstruct;

@@ -1,4 +1,4 @@
-package ru.vsu.cs.proskuryakov.coffeestrike.app.security;
+package ru.vsu.cs.proskuryakov.coffeestrike.security;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
@@ -19,9 +19,9 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import ru.vsu.cs.proskuryakov.coffeestrike.app.security.converter.AuthenticationConverterImpl;
-import ru.vsu.cs.proskuryakov.coffeestrike.app.security.handler.AuthenticationSuccessHandlerImpl;
-import ru.vsu.cs.proskuryakov.coffeestrike.app.security.handler.LogoutSuccessHandlerImpl;
+import ru.vsu.cs.proskuryakov.coffeestrike.security.converter.AuthenticationConverterImpl;
+import ru.vsu.cs.proskuryakov.coffeestrike.security.handler.AuthenticationSuccessHandlerImpl;
+import ru.vsu.cs.proskuryakov.coffeestrike.security.handler.LogoutSuccessHandlerImpl;
 import ru.vsu.cs.proskuryakov.coffeestrike.db.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;

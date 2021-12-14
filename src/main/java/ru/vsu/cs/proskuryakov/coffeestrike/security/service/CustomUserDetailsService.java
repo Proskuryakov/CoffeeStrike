@@ -1,4 +1,4 @@
-package ru.vsu.cs.proskuryakov.coffeestrike.app.security.service;
+package ru.vsu.cs.proskuryakov.coffeestrike.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;

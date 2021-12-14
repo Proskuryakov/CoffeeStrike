@@ -1,4 +1,4 @@
-package ru.vsu.cs.proskuryakov.coffeestrike.app.security.models;
+package ru.vsu.cs.proskuryakov.coffeestrike.security.models;
 
 import lombok.*;
 

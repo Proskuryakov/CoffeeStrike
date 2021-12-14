@@ -1,4 +1,4 @@
-package ru.vsu.cs.proskuryakov.coffeestrike.app.security.handler;
+package ru.vsu.cs.proskuryakov.coffeestrike.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import ru.vsu.cs.proskuryakov.coffeestrike.app.exceptions.NotFoundException;
-import ru.vsu.cs.proskuryakov.coffeestrike.app.security.models.User;
+import ru.vsu.cs.proskuryakov.coffeestrike.security.models.User;
 import ru.vsu.cs.proskuryakov.coffeestrike.db.repository.UserRepository;
 
 import javax.servlet.FilterChain;
