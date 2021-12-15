@@ -150,24 +150,45 @@ class RepositoryTest {
     }
 
     @Test
-    @DisplayName("Search category by name test")
-    void searchCategoryByNameTest() {
+    @DisplayName("Search category by name - one result")
+    void searchCategoryByNameSearchCategory1Test() {
         categoryRepository.insert(categoryItem1);
         categoryRepository.insert(categoryItem2);
 
         var res = categoryRepository.findCategoryItemsByNameContains("лат");
         assertEquals(1, res.size());
         assertIterableEquals(List.of(categoryItem1), res);
+    }
 
-        res = categoryRepository.findCategoryItemsByNameContains("раф");
+    @Test
+    @DisplayName("Search category by name - one result")
+    void searchCategoryByNameSearchCategory2Test() {
+        categoryRepository.insert(categoryItem1);
+        categoryRepository.insert(categoryItem2);
+
+        var res = categoryRepository.findCategoryItemsByNameContains("раф");
         assertEquals(1, res.size());
         assertIterableEquals(List.of(categoryItem2), res);
+    }
 
-        res = categoryRepository.findCategoryItemsByNameContains("а");
+    @Test
+    @DisplayName("Search category by name - all test")
+    void searchCategoryByNameAllCategoryTest() {
+        categoryRepository.insert(categoryItem1);
+        categoryRepository.insert(categoryItem2);
+
+        var res = categoryRepository.findCategoryItemsByNameContains("а");
         assertEquals(2, res.size());
         assertIterableEquals(List.of(categoryItem1, categoryItem2), res);
+    }
 
-        res = categoryRepository.findCategoryItemsByNameContains("б");
+    @Test
+    @DisplayName("Search category by name - empty result test")
+    void searchCategoryByNameEmptyResultTest() {
+        categoryRepository.insert(categoryItem1);
+        categoryRepository.insert(categoryItem2);
+
+        var res = categoryRepository.findCategoryItemsByNameContains("б");
         assertTrue(res.isEmpty());
     }
 
@@ -211,8 +232,8 @@ class RepositoryTest {
     }
 
     @Test
-    @DisplayName("Search drink by name in category test")
-    void searchDrinksByNameInCategoryTest() {
+    @DisplayName("Search drink by name in category 1 test")
+    void searchDrinksByNameInCategory1Test() {
         categoryRepository.insert(categoryItem1);
         var drink2 = drinkItem1.withDrinkid("3").withName("латте смородина");
         drinkRepository.insert(drinkItem1);
@@ -221,16 +242,43 @@ class RepositoryTest {
         var res = drinkRepository.findAllByCategoryItemIsAndNameContains(categoryItem1, "латте");
         assertEquals(2, res.size());
         assertIterableEquals(List.of(drinkItem1, drink2), res);
+    }
 
-        res = drinkRepository.findAllByCategoryItemIsAndNameContains(categoryItem1, "смородина");
+    @Test
+    @DisplayName("Search drink by name in category 2 test")
+    void searchDrinksByNameInCategory2Test() {
+        categoryRepository.insert(categoryItem1);
+        var drink2 = drinkItem1.withDrinkid("3").withName("латте смородина");
+        drinkRepository.insert(drinkItem1);
+        drinkRepository.insert(drink2);
+
+        var res = drinkRepository.findAllByCategoryItemIsAndNameContains(categoryItem1, "смородина");
         assertEquals(1, res.size());
         assertIterableEquals(List.of(drink2), res);
+    }
 
-        res = drinkRepository.findAllByCategoryItemIsAndNameContains(categoryItem1, "класс");
+    @Test
+    @DisplayName("Search drink by name in category 3 test")
+    void searchDrinksByNameInCategory3Test() {
+        categoryRepository.insert(categoryItem1);
+        var drink2 = drinkItem1.withDrinkid("3").withName("латте смородина");
+        drinkRepository.insert(drinkItem1);
+        drinkRepository.insert(drink2);
+
+        var res = drinkRepository.findAllByCategoryItemIsAndNameContains(categoryItem1, "класс");
         assertEquals(1, res.size());
         assertIterableEquals(List.of(drinkItem1), res);
+    }
 
-        res = drinkRepository.findAllByCategoryItemIsAndNameContains(categoryItem1, "карамель");
+    @Test
+    @DisplayName("Search drink by name in category 4 test")
+    void searchDrinksByNameInCategory4Test() {
+        categoryRepository.insert(categoryItem1);
+        var drink2 = drinkItem1.withDrinkid("3").withName("латте смородина");
+        drinkRepository.insert(drinkItem1);
+        drinkRepository.insert(drink2);
+
+        var res = drinkRepository.findAllByCategoryItemIsAndNameContains(categoryItem1, "карамель");
         assertTrue(res.isEmpty());
     }
 
@@ -300,8 +348,8 @@ class RepositoryTest {
     }
 
     @Test
-    @DisplayName("Search product by name test")
-    void searchProductByNameTest() {
+    @DisplayName("Search product by name test - first product test")
+    void searchProductByNameOneResult1Test() {
         var product1 = new ProductItem("1", "молоко");
         var product2 = new ProductItem("2", "эспрессо");
 
@@ -311,16 +359,46 @@ class RepositoryTest {
         var res = productRepository.findAllByNameContains("мол");
         assertEquals(1, res.size());
         assertIterableEquals(List.of(product1), res);
+    }
 
-        res = productRepository.findAllByNameContains("эс");
+    @Test
+    @DisplayName("Search product by name - second product test")
+    void searchProductByNameOneResult2Test() {
+        var product1 = new ProductItem("1", "молоко");
+        var product2 = new ProductItem("2", "эспрессо");
+
+        productRepository.insert(product1);
+        productRepository.insert(product2);
+
+        var res = productRepository.findAllByNameContains("эс");
         assertEquals(1, res.size());
         assertIterableEquals(List.of(product2), res);
+    }
 
-        res = productRepository.findAllByNameContains("о");
+    @Test
+    @DisplayName("Search product by name - all match test")
+    void searchProductByNameAllMatchTest() {
+        var product1 = new ProductItem("1", "молоко");
+        var product2 = new ProductItem("2", "эспрессо");
+
+        productRepository.insert(product1);
+        productRepository.insert(product2);
+
+        var res = productRepository.findAllByNameContains("о");
         assertEquals(2, res.size());
         assertIterableEquals(List.of(product1, product2), res);
+    }
 
-        res = productRepository.findAllByNameContains("ф");
+    @Test
+    @DisplayName("Search product by name - empty result test")
+    void searchProductByNameEmptyResultTest() {
+        var product1 = new ProductItem("1", "молоко");
+        var product2 = new ProductItem("2", "эспрессо");
+
+        productRepository.insert(product1);
+        productRepository.insert(product2);
+
+        var res = productRepository.findAllByNameContains("ф");
         assertTrue(res.isEmpty());
     }
 
